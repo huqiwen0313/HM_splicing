@@ -17,7 +17,7 @@ In addition, we trained iterative random forest model to identify interactions o
 Collectively, our data demonstrated a link between hPTMs and alternative splicing which will drive further experimental studies on the functional relevance of these modifications to alternative splicing.
 
 ## Data
-Data used in this analysis were downloaded from ENCODE database(https://www.encodeproject.org/). We selected mouse embryonic tissue developmental data from forebrain, hindbrain, midbrain, neural tube, heart, liver and limb from 6 time points (E11.5 - E16.5 day)
+Data used in this analysis were downloaded from ENCODE database (https://www.encodeproject.org/). We selected mouse embryonic tissue developmental data from forebrain, hindbrain, midbrain, neural tube, heart, liver and limb from 6 time points (E11.5 - E16.5 day)
 
 
 ## License 
