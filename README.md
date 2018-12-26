@@ -2,9 +2,11 @@
 
 ### Specific histone modifications associate with alternative exon selection during mammalian development
 
-**Qiwen Hu, Casey S Greene, Elizabeth A Heller<sup>+</sup>.** [Specific histone modifications associate with alternative exon selection during mammalian development](https://doi.org/10.1101/361816). _bioRxiv._ 2018.
+**Qiwen Hu, Casey Greene, Elizabeth Heller<sup>+</sup>.** [Specific histone modifications associate with alternative exon selection during mammalian development](https://doi.org/10.1101/361816). _bioRxiv._ 2018.
 
 ## Data
+Data used in this analysis were downloaded from ENCODE database(https://www.encodeproject.org/). We selected mouse embryonic tissue developmental data from forebrain, hindbrain, midbrain, neural tube, heart, liver and limb from 6 time points (E11.5 - E16.5 day)
+
 
 ## License 
 
