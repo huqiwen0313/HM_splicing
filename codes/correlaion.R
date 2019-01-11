@@ -1,9 +1,8 @@
 # Qiwen Hu - 2019
 # This script is used to calculate the correlation between gene expression and psi
 #  for each splicing event
-# Usage: 
 
-input.dir <- "E:/work/upenn/git/HM_splicing/data/tissue.gene.count.data/"
+input.dir <- "/data/tissue.gene.count.data/"
 setwd(input.dir)
 
 # list file names
@@ -42,4 +41,3 @@ dev.off()
 
 write.table(cor.table, quote = FALSE, col.names = TRUE,
             row.names = FALSE, sep = "\t", file = "exp.psi.cor.table")
-
