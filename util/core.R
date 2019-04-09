@@ -68,7 +68,12 @@ cal_HM_signal_flanking <- function(HM_file, marker, total_reads, exp.flag=1, exp
     }
   }
   HM_signal <- dplyr::bind_rows(HM_signal)
-  names(HM_signal)[-1] = paste(marker, names(HM_signal)[-1], sep="_")
+  
+  if(exp.flag == 1){
+    names(HM_signal)[-c(1, 6)] = paste(marker, names(HM_signal)[-1], sep="_")
+  } else{
+    names(HM_signal)[-1] = paste(marker, names(HM_signal)[-1], sep="_")
+  }
   return(HM_signal)
 }
 
