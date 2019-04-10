@@ -4,7 +4,6 @@ library(cvTools)
 library(nnet)
 library(caret)
 library(pROC)
-library(glmulti)
 library(iRF)
 library(AUC)
 

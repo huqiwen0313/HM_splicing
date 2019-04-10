@@ -1,5 +1,6 @@
 # Qiwen HU 2019
 # This script is used to integrate HM signals with gene expression data and generate new feature files for modelling
+setwd("/home/qiwen/Desktop/data/git/HM_splicing")
 source("./util/core.R")
 
 input.dir <- file.path("data", "different_timepoints")
