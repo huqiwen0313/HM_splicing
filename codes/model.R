@@ -134,7 +134,7 @@ model <- function(data) {
                         method = "glmnet", 
                         trControl = trainControl(method = "cv",number = 3,
                                                  seeds = logit_car
-                                                 etSeeds), 
+                                                 setSeeds), 
                         family="binomial",
                         tuneGrid = expand.grid(.alpha=1, .lambda=seq(0, 10, by = 0.01)))
     

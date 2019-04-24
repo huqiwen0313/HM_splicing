@@ -5,7 +5,7 @@ source("./util/core.R")
 
 input.dir <- file.path("data", "different_timepoints")
 gene.exp.dir <- file.path("data", "tissue.gene.count.data")
-output.dir <- file.path("data", "HM_features")
+output.dir <- file.path("data", "HM_features", "new")
 
 file.list <- list.files(input.dir)
 #remove allsample.reads.txt from file.list
@@ -19,6 +19,8 @@ unique_file_header <- as.vector(outer(tissue, time_point, paste, sep="."))
 
 unique_file_header <- unique_file_header[-which(unique_file_header == "limb.mixed.16.5" 
                                                 | unique_file_header == "neuraltube.mixed.16.5")]
+# get gene length information
+gene.length <- read.table(file.path(gene.exp.dir, "mm10.encode.gene.length.txt"), sep ="\t", header = TRUE)
 
 for(file.iter in unique_file_header){
   HM_files <- file.list[grep(file.iter, file.list)]
@@ -31,7 +33,8 @@ for(file.iter in unique_file_header){
     total_reads <- get_total_reads(HM_files[i])
     sample_info <- get_sample_info(HM_files[i])
     HM_file <- read.table(file.path(input.dir, HM_files[i]), sep = "\t", header = TRUE)
-    HM_flanking_features[[i]] <- cal_HM_signal_flanking(HM_file, sample_info[2], total_reads, exp.flag = 1, exp_file = gene.exp)
+    HM_flanking_features[[i]] <- cal_HM_signal_flanking(HM_file, sample_info[2], total_reads, exp.flag = 1, 
+                                                        exp_file = gene.exp, gene.length=gene.length)
     if(i > 1){
       HM_flanking_features[[i]] <- HM_flanking_features[[i]][, -c(1, 6)]
     }

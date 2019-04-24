@@ -24,18 +24,21 @@ get_total_reads <- function(sample_file_name){
   return(total_reads)
 }
 
-cal_HM_signal_flanking <- function(HM_file, marker, total_reads, exp.flag=1, exp_file = NULL){
+cal_HM_signal_flanking <- function(HM_file, marker, total_reads, exp.flag=1, exp_file = NULL, gene.length = NULL){
   # caclulate chip-seq signals in the exon flanking regions
   # Input:  exp.flag - 1, incoprate gene expression in the feature
   
-  if(is.null(exp_file) & exp.flag == 1){
-    stop("please provide corespondent gene expression file")
+  if(is.null(exp_file) & exp.flag == 1 & is.null(gene.length)){
+    stop("please provide corespondent gene expression and length file")
   }
   
   if(exp.flag == 1){
+    # merge file
+    names(gene.length) <- c("Gene", "length")
+    gene.exp <- merge(gene.exp, gene.length, by=c("Gene"))
     # normalization
-    gene.exp$cpm <- (gene.exp$count/sum(gene.exp$count)) * 1e6
-    gene.exp <- gene.exp[, c(1, 4)]
+    gene.exp$cpm <- gene.exp$count/(gene.exp$length/1000 *sum(gene.exp$count)/1e6)
+    gene.exp <- gene.exp[, c(1, 5)]
     names(gene.exp) <- c("GeneID", "cpm")
     HM_file <- merge(HM_file, gene.exp, by=c("GeneID"))
   }

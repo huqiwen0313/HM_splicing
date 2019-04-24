@@ -171,6 +171,49 @@ model <- function(data) {
   return(list(rf_performance, logit_performance, impscore_all))
 }
 
+model_exp <- function(data) {
+  # random forest regression model to identify HMs asscociated with expression
+  # input: data - same as the input in model function
+  
+  #set seed for external cross-validation
+  set.seed(11223)
+  
+  # now we are look at expression, remove exon type classification label
+  data <- data[, -1]
+  
+  k <- 5
+  cv <- cvTools::cvFolds(nrow(data), K=k, R=1)
+  
+  rf_performance <- c()
+  
+  for(i in 1:k){
+    test <- data[cv$subset[which(cv$which == i)],]
+    train <- data[cv$subset[-1*which(cv$which == i)],]
+    
+    rf.fit <- caret::train(exp ~ ., data = train,  method = 'ranger',
+          tuneLength = 10, 
+          trControl = trainControl(method = "cv",number = 3),
+          num.trees = 700,
+          importance = "permutation")
+  
+    testPred <- predict(rf.fit , test[, -1*which(colnames(test) == "exp")])
+    rmse.score <- round(RMSE(testPred,test$exp), 2)
+    
+    rf_performance <- c(rf_performance, rmse.score)
+    impscore = varImp(rf.fit)$importance
+    impscore$variable = rownames(impscore)
+    colnames(impscore)[1] = i
+    if(i == 1){
+      impscore_all = impscore
+    } else{
+      impscore_all = merge(impscore_all, impscore, by=c("variable"))
+    }
+  }
+  
+  impscore_all$ave = rowMeans(impscore_all[,2:6])
+  return(list(rf_performance, impscore_all))
+}
+
 iRF_model <- function(data, tissue, timepoint, n.iter = 20, n.interaction = 10, bootstrap = 30){
   set.seed(11223)
   data$class <- factor(data$class)
