@@ -22,5 +22,5 @@ Data used in this analysis were downloaded from ENCODE database (https://www.enc
 
 ## License 
 
-This repository is dual licensed as **[BSD 3-Clause](https://github.com/huqiwen0313/HM_splicing/LICENSE_BSD-3.md)** (source code) and **[CC0 1.0](https://github.com/huqiwen0313/HM_splicing/license_CC0.md)** (figures, documentation, and our arrangement of the facts contained in the underlying data)
+This repository is dual licensed as **[BSD 3-Clause](https://github.com/huqiwen0313/HM_splicing/blob/master/LICENSE_BSD-3.md)** (source code) and **[CC0 1.0](https://github.com/huqiwen0313/HM_splicing/blob/master/license_CC0.md)** (figures, documentation, and our arrangement of the facts contained in the underlying data)
 
