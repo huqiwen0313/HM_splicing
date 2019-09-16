@@ -20,7 +20,8 @@ unique_file_header <- as.vector(outer(tissue, time_point, paste, sep="."))
 unique_file_header <- unique_file_header[-which(unique_file_header == "limb.mixed.16.5" 
                                                 | unique_file_header == "neuraltube.mixed.16.5")]
 # get gene length information
-gene.length <- read.table(file.path(gene.exp.dir, "mm10.encode.gene.length.txt"), sep ="\t", header = TRUE)
+gene.length <- read.table(file.path(gene.exp.dir, "mm10.encode.gene.length"), sep ="\t", header = F)
+gene.length <- gene.length[, c(2,5)]
 
 for(file.iter in unique_file_header){
   HM_files <- file.list[grep(file.iter, file.list)]
