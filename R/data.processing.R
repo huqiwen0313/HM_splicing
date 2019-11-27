@@ -152,7 +152,7 @@ classify_splicing_code <- function(SE_file){
   # Returns:
   #  File with a class label indicates splicing codes
 
-  inclevel <- colsplit(as.character(SE_file$IncLevel2), split = ",", names = c("s1", "s2"))
+  inclevel <- reshape2::colsplit(as.character(SE_file$IncLevel2), ",", names = c("s1", "s2"))
   ave_inclevel <- rowMeans(inclevel, na.rm = T)
   SE_file$ave_inclevel <- ave_inclevel
   gain <- SE_file[SE_file$PValue <= 0.05 & SE_file$FDR <= 0.1
