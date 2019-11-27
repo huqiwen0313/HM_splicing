@@ -1,6 +1,4 @@
-# HM_splicing
-
-### Specific histone modifications associate with alternative exon selection during mammalian development
+## Specific histone modifications associate with alternative exon selection during mammalian development
 
 **Qiwen Hu, Casey Greene, Elizabeth Heller.** [Specific histone modifications associate with alternative exon selection during mammalian development](https://doi.org/10.1101/361816). _bioRxiv._ 2018.
 
@@ -22,7 +20,9 @@ Data used in this analysis were downloaded from ENCODE database (https://www.enc
 ## Installation
 
 ```r
+install.packages("devtools")
 devtools::install_github("huqiwen0313/HM_splicing")
+library(HMSplicing)
 ```
 
 ## License 
