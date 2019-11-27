@@ -18,7 +18,7 @@ Collectively, our data demonstrated a link between hPTMs and alternative splicin
 Data used in this analysis were downloaded from ENCODE database (https://www.encodeproject.org/). We selected mouse embryonic tissue developmental data from forebrain, hindbrain, midbrain, neural tube, heart, liver and limb from 6 time points (E11.5 - E16.5 day)
 
 ## Approach
-![](https://github.com/huqiwen0313/HM_splicing/blob/master/figs/cover.figure.pdf)
+![overview](https://github.com/huqiwen0313/HM_splicing/blob/master/figs/cover.figure.png)
 
 ## Installation
 
