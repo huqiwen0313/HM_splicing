@@ -28,7 +28,7 @@ devtools::install_github("huqiwen0313/HM_splicing")
 library(HMSplicing)
 ```
 ## Use examples
-Data download and preprocessing: 
+* Data download and preprocessing (https://github.com/huqiwen0313/HM_splicing/blob/master/man/data.processing.md)
 
 ## License 
 
