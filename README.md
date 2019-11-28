@@ -27,9 +27,9 @@ install.packages("devtools")
 devtools::install_github("huqiwen0313/HM_splicing")
 library(HMSplicing)
 ```
-## Use examples
+## Usage examples
 * [Data download and preprocessing](https://github.com/huqiwen0313/HM_splicing/blob/master/man/data.processing.md)
-* [Data exploration and modelling]
+* [Data exploration and modelling](https://github.com/huqiwen0313/HM_splicing/blob/master/man/data.exploration.modelling.md)
 
 ## License 
 
