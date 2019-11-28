@@ -7,7 +7,7 @@ We selected mouse embryonic tissue developmental data from forebrain, hindbrain,
 (E11.5 - E16.5 day). 
 The detail datasets we used are at data/encode_data_table.
 
-The datasets used in this manuscript can be downloaded using the follow R script:
+The datasets used in this manuscript can be downloaded using the following R script:
 
 ```R
 Rscript ./data/download.sample.R
@@ -22,7 +22,7 @@ Example of rMATs command:
 RNASeq-MATS.py -b1 input_bam_timepoint_1_rep1,input_bam_timepoint_1_rep2 -b2 input_bam_timepoint_2_rep1,input_bam_timepoint_2_rep2 
 -gtf gencode.vM4.annotation.gtf -t single -len 100 -c 0.0001 -analysis U -novelSS 1 -keepTemp -o rMATs.out
 ```
-### Step 3: Identify spliced code from rMATs output
+### Step 3: Identify splicing categories from rMATs output
 Example usage for individual sample:
 
 ```R
@@ -55,5 +55,36 @@ head(rmatsClassified)
 16     1.0,1.0     0.0,0.0              1.000        0.000     0
 ```
 
+### Step 4: Quantify ChIP-seq signals from exon flanking regions
+There are different ways to quantify the the ChIP-seq signals, we provide a perl code to do it.
+Example Usage:
+$samfile: "sam file fore each sample";
+$asfile: "results from rmatsClassified for each sample";
+$outfile: "output file names"
+
+```R
+perl count.hm.reads.pl $samfile $asfile $outfile
+```
+This will generate a file similar to ./example_data/H3K4me1.canonical.exon.signal.
+
+### Step 5: Get hPTM features for each marker in the exon flanking region and prepare for modelling
+Example Usage for H3K4me1:
+
+```R
+hPTM <- read.table("./example_data/forebrain.mixed.12.5day.H3K4me1.1.bam.sam.hm.signal", sep="\t", header=TRUE)
+hPTMsig <- HMflankingSig(hPTM, "H3K4me1", 22497119)
+head(hPTMsig)
+```
+```
+  class H3K4me1_chip_left_intron H3K4me1_chip_left_exon H3K4me1_chip_right_intron H3K4me1_chip_right_exon
+1     0               0.17780054             0.04445014                0.40005122              0.17780054
+2     0               0.08890027             0.13335041                0.04445014              0.08890027
+3     0               0.04445014             0.17780054                0.04445014              0.04445014
+4     0               0.13335041             0.08890027                0.08890027              0.13335041
+5     0               0.26670082             0.22225068                0.26670082              0.26670082
+6     0               0.13335041             0.22225068                0.22225068              0.13335041
+```
+Depends on how many markers are available for the study, the final results will combine multiple hPTMsig files together,
+so that each gene will have hPTM features from all markers.
 
 

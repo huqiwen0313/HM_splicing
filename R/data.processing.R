@@ -175,5 +175,40 @@ classify_splicing_code <- function(SE_file){
   return(out_file)
 }
 
+HMflankingSig <- function(HM_file, marker, total_reads){
 
+  # This function is used to extract the hPTM signal in the exon flanking regions
+  #
+  # Args:
+  #  HM_file: processed HM rMAST file with splicing categories
+  #  marker: hPTM information, e.g. H3K36me3
+  #  total_reads: total reads in sample
+  #
+  # Returns:
+  #  file contains hPTM signal in the exon flanking regions
+
+  HM_signal <- list()
+  for(i in 1:nrow(HM_file)){
+    if(HM_file[i,]$strand == "+"){
+      chip_left <- as.numeric(unlist(strsplit(as.character(HM_file[i, ]$chip_left), ",")))
+      chip_right <- as.numeric(unlist(strsplit(as.character(HM_file[i, ]$chip_right), ",")))
+    } else{
+      chip_left <- as.numeric(unlist(strsplit(as.character(HM_file[i, ]$chip_right), ",")))
+      chip_left <- rev(chip_left)
+      chip_right <- as.numeric(unlist(strsplit(as.character(HM_file[i, ]$chip_left), ",")))
+      chip_right <- rev(chip_right)
+    }
+    chip_left_intron <- (sum(chip_left[1:10]) / total_reads) * 1e6
+    chip_left_exon <- (sum(chip_left[11:20]) / total_reads) * 1e6
+    chip_right_intron <- (sum(chip_right[11:20]) / total_reads) * 1e6
+    chip_right_exon <- (sum(chip_left[1:10]) / total_reads) * 1e6
+
+    HM_signal[[i]] <- data.frame(class = HM_file[i, ]$class, chip_left_intron = chip_left_intron,
+                                 chip_left_exon = chip_left_exon, chip_right_intron = chip_right_intron,
+                                 chip_right_exon = chip_right_exon)
+  }
+  HM_signal <- dplyr::bind_rows(HM_signal)
+  names(HM_signal)[-1] = paste(marker, names(HM_signal)[-1], sep="_")
+  return(HM_signal)
+}
 

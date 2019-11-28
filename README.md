@@ -29,6 +29,7 @@ library(HMSplicing)
 ```
 ## Use examples
 * [Data download and preprocessing](https://github.com/huqiwen0313/HM_splicing/blob/master/man/data.processing.md)
+* [Data exploration and modelling]
 
 ## License 
 
