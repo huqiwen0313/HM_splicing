@@ -124,7 +124,7 @@ model <- function(data) {
     logit.lass <- caret::train(train[, -1*which(colnames(train) == "class")],
                                as.factor(train$class),
                                method = "glmnet",
-                               trControl = trainControl(method = "cv",number = 3,
+                               trControl = caret::trainControl(method = "cv",number = 3,
                                                         seeds = logit_caretSeeds,
                                                         setSeeds),
                                family="binomial",
@@ -132,7 +132,7 @@ model <- function(data) {
 
     rf <- caret::train(train[, -1*which(colnames(train) == "class")],
                        as.factor(train$class), method="rf",
-                       trControl = trainControl(method = "cv",number = 3, seeds = rf_caretSeeds),
+                       trControl = caret::trainControl(method = "cv",number = 3, seeds = rf_caretSeeds),
                        tuneLength=10)
     rf_predict <- predict(rf, test[, -1*which(colnames(test) == "class")])
     logit_predict <- predict(logit.lass, test[, -1*which(colnames(test) == "class")])
@@ -159,7 +159,7 @@ model <- function(data) {
   logit_performance <- rbind(logit_performance, colMeans(logit_performance))
   impscore_all$ave = rowMeans(impscore_all[,2:6])
 
-  return(list(rf_performance, logit_performance, impscore_all))
+  return(list(rf.performance=rf_performance, logit.performance=logit_performance, impscore=impscore_all))
 }
 
 model_exp <- function(data) {

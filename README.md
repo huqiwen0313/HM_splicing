@@ -22,6 +22,15 @@ Data used in this analysis were downloaded from ENCODE database (https://www.enc
 
 ## Installation
 
+### Requirements
+* R >= 3.6.0
+
+### Dependencies
+Dependencies required to reproduce the analyses are at ./codes/dependencies.R
+```r
+Rscript dependencies.R
+```
+
 ```r
 install.packages("devtools")
 devtools::install_github("huqiwen0313/HM_splicing")
