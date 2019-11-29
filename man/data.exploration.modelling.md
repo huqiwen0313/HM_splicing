@@ -87,10 +87,32 @@ in a list.
 ```r
 rfPerf <- read.table("./example_data/alldata.rf.perf.gain.vs.loss.txt", sep="\t", header=TRUE)
 logitPerf <- read.table("./example_data/alldata.logit.perf.gain.vs.loss.txt", sep="\t", header=TRUE)
-# show the first plot
 pl.list <- plotModelPerformance(rfPerf, logitPerf)
+# show the first plot
+pl.list[[1]]
 ```
 <img src="../figs/performance.comp.example.png" width="712" height="376" />
+
+### Run iterative Random forest model to detect reliable hPTM interactions (5-fold CV)
+
+```r
+interaction.list <- iRFModel(gain.loss.features, n.iter = 20, n.interaction = 10, bootstrap = 30)
+head(interaction.list)
+```
+```
+32   H3K36me3_chip_left_exon_H3K36me3_chip_right_intron 0.9666667
+78 H3K36me3_chip_right_intron_H3K4me3_chip_right_intron 0.9466667
+79     H3K36me3_chip_right_intron_H3K9ac_chip_left_exon 0.8400000
+42    H3K36me3_chip_left_exon_H3K4me3_chip_right_intron 0.7800000
+67    H3K36me3_chip_right_intron_H3K4me1_chip_left_exon 0.7733333
+74 H3K36me3_chip_right_intron_H3K4me2_chip_right_intron 0.7333333
+```
+
+Visulization top interactions
+```r
+plotInteraction(interaction.list, cutoff=0.5, "forebrain", "13.5 day")
+```
+<img src="../figs/performance.comp.example.png" width="700" height="500" />
 
 
 

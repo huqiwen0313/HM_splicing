@@ -205,7 +205,7 @@ model_exp <- function(data) {
   return(list(rf_performance, impscore_all))
 }
 
-iRFModel <- function(data, tissue, timepoint, n.iter = 20, n.interaction = 10, bootstrap = 30){
+iRFModel <- function(data, n.iter = 20, n.interaction = 10, bootstrap = 30){
   # run interative random forest model
   set.seed(11223)
   data$class <- factor(data$class)
@@ -236,9 +236,8 @@ iRFModel <- function(data, tissue, timepoint, n.iter = 20, n.interaction = 10, b
   interaction.rank$ave <- rowMeans(interaction.rank[, 2:(k+1)])
   interaction.rank <- interaction.rank[order(interaction.rank$ave, decreasing = TRUE), ]
 
-  # Generate interaction plot
   interaction.list <- interaction.rank[, c(1, ncol(interaction.rank))]
-  p <- HM_interaction_plot(interaction.list, tissue = tissue, timepoint = timepoint)
+  #p <- HM_interaction_plot(interaction.list, tissue = tissue, timepoint = timepoint)
 
-  return(list(interaction.rank, p))
+  return(interaction.list)
 }
