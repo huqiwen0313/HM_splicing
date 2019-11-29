@@ -11,7 +11,7 @@ In this study, we hypothesized that hPTMs regulate expression of alternatively s
 To address this notion, we trained supervised machine learning models to relate global hPTM enrichment to AS regulation during mammalian tissue development.
 We found that specific histone modifications play a dominant role in skipped exon selection among all the tissues and developmental time points examined. 
 
-In addition, we trained [iterative random forest](https://www.pnas.org/content/115/8/1943)** ([Github](https://github.com/sumbose/iRF)) model to identify interactions of hPTMs that associated with skipped exon selection.
+In addition, we trained [iterative random forest](https://www.pnas.org/content/115/8/1943)([Github](https://github.com/sumbose/iRF)) model to identify interactions of hPTMs that associated with skipped exon selection.
 Collectively, our data demonstrated a link between hPTMs and alternative splicing which will drive further experimental studies on the functional relevance of these modifications to alternative splicing.
 
 ## Data
