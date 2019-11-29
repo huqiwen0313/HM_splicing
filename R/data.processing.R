@@ -1,5 +1,6 @@
 # functions for data processing
 
+#' @export
 covsum <- function(rl.table, region, ws=1){
   # caculate cumulative coverage based on a sliding window in a region
 
@@ -14,14 +15,17 @@ covsum <- function(rl.table, region, ws=1){
   return(cov)
 }
 
+#' caculate read coverage in the flanking region of target exons
+#'
+#' @param bamfile - bam file of chip-seq data (bowtie alignment)
+#' @param region - a dataframe indicate chromosome, target exon start and target exon end position
+#' @param region - a dataframe indicate chromosome, target exon start and target exon end position
+#' @return list contain: 1. vector of read coverage of each individual position in the left flanking region
+#'                       2. vector of read coverage of each individual position in the right flanking region
+#'                       3. total library size of bam file
+#' @import Rsamtools
+#' @export
 getCoverage <- function(bamfile, region, flanking.ws = 150, read.tag.names=F){
-  # caculate read coverage in the flanking region of target exons
-  # input: bamfile - bam file of chip-seq data (bowtie alignment)
-  #        region - a dataframe indicate chromosome, target exon start and target exon end position
-  #        flanking.ws - window size to look at exon flanking region
-  # returns: list contain: 1. vector of read coverage of each individual position in the left flanking region
-  #                        2. vector of read coverage of each individual position in the right flanking region
-  #                        3. total library size of bam file
 
   if(!is.element("Rsamtools", installed.packages()[, 1])) {
     stop("Rsamtools Bioconductor package is now required for BAM file support. Please install")
@@ -140,17 +144,15 @@ getTotalReads <- function(sample_file_name){
   return(total_reads)
 }
 
+#' This function take the input of rMATS (http://rnaseq-mats.sourceforge.net/user_guide.htm#output)
+#' or rMATS HM files and calssify alternative spliced exons into different
+#'categories (splicing codes): gain (0), loss (1), High (2) and Low (3)
+#'
+#' @param SE_file: rMAT result or rMAST result with HM signal at the end
+#' @return File with a class label indicates splicing codes
+#' @import Rsamtools
+#' @export
 classify_splicing_code <- function(SE_file){
-
-  # This function take the input of rMATS (http://rnaseq-mats.sourceforge.net/user_guide.htm#output)
-  # or rMATS HM files and calssify alternative spliced exons into different
-  # categories (splicing codes): gain (0), loss (1), High (2) and Low (3)
-  #
-  # Args:
-  #  SE_file: rMAT result or rMAST result with HM signal at the end
-  #
-  # Returns:
-  #  File with a class label indicates splicing codes
 
   inclevel <- reshape2::colsplit(as.character(SE_file$IncLevel2), ",", names = c("s1", "s2"))
   ave_inclevel <- rowMeans(inclevel, na.rm = T)
@@ -175,6 +177,16 @@ classify_splicing_code <- function(SE_file){
   return(out_file)
 }
 
+#'  This function is used to extract the hPTM signal in the exon flanking regions
+#' or rMATS HM files and calssify alternative spliced exons into different
+#'categories (splicing codes): gain (0), loss (1), High (2) and Low (3)
+#'
+#' @param HM_file: processed HM rMAST file with splicing categories
+#' @param marker: hPTM information, e.g. H3K36me3
+#' @param total_reads: total reads in sample
+#' @return file contains hPTM signal in the exon flanking regions
+#' @import dplyr
+#' @export
 HMflankingSig <- function(HM_file, marker, total_reads){
 
   # This function is used to extract the hPTM signal in the exon flanking regions

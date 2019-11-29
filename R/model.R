@@ -20,6 +20,14 @@ setSeeds <- function(method = "cv", numbers = 1, repeats = 1, tunes = NULL, seed
   return(seeds)
 }
 
+#' Evaluate model performance
+#'
+#' @param pred predicted value
+#' @param pred_prob predicted probility
+#' @param class true class value
+#' @param cat # of classes
+#' @return performance evaluation metrics
+#' @export
 modelPerformance <- function(pred, pred_prob, class, cat){
 
   confusion <- as.matrix(table(class, pred, deparse.level = 0))
@@ -101,6 +109,14 @@ rf_perf_vis <- function(files){
   return(plot)
 }
 
+#' run logistic and random forest model
+#'
+#' @param data training data
+#' @return list contains performance metric of logistic/random forest model and impscore
+#' @import cvTools
+#' @import caret
+#' @import glmnet
+#' @export
 model <- function(data, seed=11223) {
 
   #set seed for external cross-validation
@@ -162,9 +178,15 @@ model <- function(data, seed=11223) {
   return(list(rf.performance=rf_performance, logit.performance=logit_performance, impscore=impscore_all))
 }
 
+#' random forest regression model to identify HMs asscociated with expression
+#'
+#' @param data training data
+#' @return list contains performance metric of logistic/random forest model and impscore
+#' @import cvTools
+#' @import caret
+#' @import glmnet
+#' @export
 model_exp <- function(data) {
-  # random forest regression model to identify HMs asscociated with expression
-  # input: data - same as the input in model function
 
   #set seed for external cross-validation
   set.seed(11223)
@@ -183,7 +205,7 @@ model_exp <- function(data) {
 
     rf.fit <- caret::train(exp ~ ., data = train,  method = 'ranger',
                            tuneLength = 10,
-                           trControl = trainControl(method = "cv",number = 3),
+                           trControl = caret::trainControl(method = "cv",number = 3),
                            num.trees = 700,
                            importance = "permutation")
 
@@ -205,6 +227,14 @@ model_exp <- function(data) {
   return(list(rf_performance, impscore_all))
 }
 
+#' run iterative random forest model based on 5-fold CV
+#'
+#' @param data training data
+#' @return interation list
+#' @import cvTools
+#' @import caret
+#' @import iRF
+#' @export
 iRFModel <- function(data, n.iter = 20, n.interaction = 10, bootstrap = 30){
   # run interative random forest model
   set.seed(11223)
