@@ -112,7 +112,7 @@ Visulization top interactions
 ```r
 plotInteraction(interaction.list, cutoff=0.5, "forebrain", "13.5 day")
 ```
-<img src="../figs/performance.comp.example.png" width="700" height="500" />
+<img src="../figs/interaction.example.png" width="700" height="500" />
 
 
 
