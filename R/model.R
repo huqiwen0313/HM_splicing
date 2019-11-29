@@ -101,10 +101,10 @@ rf_perf_vis <- function(files){
   return(plot)
 }
 
-model <- function(data) {
+model <- function(data, seed=11223) {
 
   #set seed for external cross-validation
-  set.seed(11223)
+  set.seed(seed)
   # set seed for caret training
   logit_caretSeeds <- setSeeds(method = "cv", numbers = 3, repeats = 1)
   rf_caretSeeds <- setSeeds(method = "cv", numbers = 3, repeats = 1, tunes = 10)
@@ -157,7 +157,7 @@ model <- function(data) {
   rf_performance <- rbind(rf_performance, colMeans(rf_performance))
   logit_performance <- dplyr::bind_rows(logit_performance)
   logit_performance <- rbind(logit_performance, colMeans(logit_performance))
-  impscore_all$ave = rowMeans(impscore_all[,2:6])
+  impscore_all$ave = rowMeans(impscore_all[, 2:6])
 
   return(list(rf.performance=rf_performance, logit.performance=logit_performance, impscore=impscore_all))
 }
