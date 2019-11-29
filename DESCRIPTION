@@ -2,11 +2,9 @@ Package: HMSplicing
 Type: Package
 Title: Random forest based approach for detecting regulatory histone marks associated with splicing patterns
 Version: 0.1.0
-Author: Qiwen Hu
-Maintainer: Qiwen Hu <huqiwen0313@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person(given = "Qiwen", family = "Hu", email = "huqiwen0313@gmail.com", role = c("aut", "cre"))
+Description: Identify epigenetic elements associated with exon splicing patterns
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.1

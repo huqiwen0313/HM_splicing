@@ -177,7 +177,7 @@ classify_splicing_code <- function(SE_file){
   return(out_file)
 }
 
-#'  This function is used to extract the hPTM signal in the exon flanking regions
+#'  Extract the hPTM signal in the exon flanking regions
 #' or rMATS HM files and calssify alternative spliced exons into different
 #'categories (splicing codes): gain (0), loss (1), High (2) and Low (3)
 #'
