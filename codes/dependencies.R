@@ -6,3 +6,8 @@ install.packages("reshape2")
 install.packages("pROC")
 install.packages("randomForest")
 install.packages("iRF")
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("Rsamtools")
