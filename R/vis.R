@@ -5,12 +5,13 @@
 #' @param HM_file: files contain the chip-seq signals in the flanking region of AS exons and AS exon class
 #' @param total_reads: number of total reads in the sample
 #' @param sample_info: vector contains sample information (tissue, markers and time points)
+#' @param plotVar:  TRUE/FALSE, add error bar of variance if TRUE
 #' @param subsampleCanonical: subsample signals from canonical exons
 #' @param CanonicalFile: file contains chip-seq signal from canonical exons
 #' @return plot of distribution of hPTMs in the exon flanking regions
 #' @import ggplot2
 #' @export
-plotCoverage <- function(HM_file, total_reads, sample_info, subsampleCanonical=F, CanonicalFile=NULL){
+plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsampleCanonical=F, CanonicalFile=NULL){
 
   # get sample information
   tissue <- sample_info[1]
@@ -29,10 +30,10 @@ plotCoverage <- function(HM_file, total_reads, sample_info, subsampleCanonical=F
   high_ave_chip <- as_ave_chip_signal(High, total_reads)
   low_ave_chip <- as_ave_chip_signal(Low, total_reads)
 
-  chip_all <- data.frame(signal = gain_ave_chip, group = "Gain")
-  chip_all <- rbind(chip_all, data.frame(signal = loss_ave_chip, group = "Loss"))
-  chip_all <- rbind(chip_all, data.frame(signal = high_ave_chip, group = "high"))
-  chip_all <- rbind(chip_all, data.frame(signal = low_ave_chip, group = "low"))
+  chip_all <- data.frame(signal = gain_ave_chip$mean, signal_sd=gain_ave_chip$sd, group = "Gain")
+  chip_all <- rbind(chip_all, data.frame(signal = loss_ave_chip$mean, signal_sd=loss_ave_chip$sd, group = "Loss"))
+  chip_all <- rbind(chip_all, data.frame(signal = high_ave_chip$mean, signal_sd=high_ave_chip$sd, group = "high"))
+  chip_all <- rbind(chip_all, data.frame(signal = low_ave_chip$mean, signal_sd=low_ave_chip$sd, group = "low"))
 
   # caculate annova p-value
   mod <- lm(signal ~ group, data = chip_all)
@@ -54,30 +55,57 @@ plotCoverage <- function(HM_file, total_reads, sample_info, subsampleCanonical=F
   }
 
   # plot average chip-seq distribution for alternative spliced exons
-  plot(loss_ave_chip[1:20], type="l", xlim = c(0,55),
-       frame.plot = FALSE, ylim=c(0,max(max(gain_ave_chip), max(loss_ave_chip),
-                                        max(high_ave_chip), max(low_ave_chip)) + 0.005),
+  plot(loss_ave_chip$mean[1:20], type="l", xlim = c(0,55),
+       frame.plot = FALSE, ylim=c(0,max(max(gain_ave_chip$mean), max(loss_ave_chip$mean),
+                                        max(high_ave_chip$mean), max(low_ave_chip$mean)) + 0.005),
        xlab=paste("p-value:", mod.pval, sep=" "), ylab="chip signal", xaxt='n',
        lwd=2, main = as.character(paste(histone_marker, tissue, time_point, sep = " ")),
        cex.main=1)
   Axis(side=1, at=c(1, 10, 20, 30, 40, 50), labels=c("-150", "0", "+150", "-150", "0", "+150"))
-  lines(30:49, loss_ave_chip[22:41], lwd=2)
-  lines(1:20, gain_ave_chip[1:20], col="red", lwd=2)
-  lines(30:49, gain_ave_chip[22:41], col="red", lwd=2)
+  lines(30:49, loss_ave_chip$mean[22:41], lwd=2)
+  lines(1:20, gain_ave_chip$mean[1:20], col="red", lwd=2)
+  lines(30:49, gain_ave_chip$mean[22:41], col="red", lwd=2)
   abline(v = c(10, 40), lty=2, col="grey")
+  lines(1:20, high_ave_chip$mean[1:20], col="blue", lwd=2)
+  lines(30:49, high_ave_chip$mean[21:40], col="blue", lwd=2)
+  lines(1:20, low_ave_chip$mean[1:20], col="green", lwd=2)
+  lines(30:49, low_ave_chip$mean[21:40], col="green", lwd=2)
 
-  lines(1:20, high_ave_chip[1:20], col="blue", lwd=2)
-  lines(30:49, high_ave_chip[21:40], col="blue", lwd=2)
-  lines(1:20, low_ave_chip[1:20], col="green", lwd=2)
-  lines(30:49, low_ave_chip[21:40], col="green", lwd=2)
+  if(plotVar){
+    abline(h = 4)
+    arrows(seq(1, 20, 1), loss_ave_chip$mean[1:20]-loss_ave_chip$sd[1:20], seq(1, 20, 1),
+           loss_ave_chip$mean[1:20]+loss_ave_chip$sd[1:20], length=0.05, angle=90, code=3)
+    arrows(seq(30, 49, 1), loss_ave_chip$mean[22:41]-loss_ave_chip$sd[22:41], seq(30, 49, 1),
+           loss_ave_chip$mean[22:41]+loss_ave_chip$sd[22:41], length=0.05, angle=90, code=3)
+    arrows(seq(1, 20, 1), gain_ave_chip$mean[1:20]-gain_ave_chip$sd[1:20], seq(1, 20, 1),
+           gain_ave_chip$mean[1:20]+gain_ave_chip$sd[1:20], length=0.05, angle=90, code=3, col="red")
+    arrows(seq(30, 49, 1), gain_ave_chip$mean[22:41]- gain_ave_chip$sd[22:41], seq(30, 49, 1),
+           gain_ave_chip$mean[22:41]+ gain_ave_chip$sd[22:41], length=0.05, angle=90, code=3, col="red")
+    arrows(seq(1, 20, 1), high_ave_chip$mean[1:20]-high_ave_chip$sd[1:20], seq(1, 20, 1),
+           high_ave_chip$mean[1:20]+high_ave_chip$sd[1:20], length=0.05, angle=90, code=3, col="blue")
+    arrows(seq(30, 49, 1), high_ave_chip$mean[22:41]- high_ave_chip$sd[22:41], seq(30, 49, 1),
+           high_ave_chip$mean[22:41]+ high_ave_chip$sd[22:41], length=0.05, angle=90, code=3, col="blue")
+    arrows(seq(1, 20, 1), low_ave_chip$mean[1:20]-low_ave_chip$sd[1:20], seq(1, 20, 1),
+           low_ave_chip$mean[1:20]+low_ave_chip$sd[1:20], length=0.05, angle=90, code=3, col="green")
+    arrows(seq(30, 49, 1), low_ave_chip$mean[22:41]- low_ave_chip$sd[22:41], seq(30, 49, 1),
+           low_ave_chip$mean[22:41]+low_ave_chip$sd[22:41], length=0.05, angle=90, code=3, col="green")
+  }
+
 
   # plot average chip-seq distribution for canonical exons
   if(subsampleCanonical){
-    lines(1:20, canonical_ave[1:20], col="purple", lwd=1, lty = 2)
-    lines(30:49, canonical_ave[21:40], col="purple", lwd=1, lty = 2)
+    lines(1:20, canonical_ave$mean[1:20], col="purple", lwd=1, lty = 2)
+    lines(30:49, canonical_ave$mean[21:40], col="purple", lwd=1, lty = 2)
+    if(plotVar){
+      abline(h = 4)
+      arrows(seq(1, 20, 1), canonical_ave$mean[1:20]-canonical_ave$sd[1:20], seq(1, 20, 1),
+             canonical_ave$mean[1:20]+canonical_ave$sd[1:20], length=0.05, angle=90, code=3)
+      arrows(seq(30, 49, 1), canonical_ave$mean[22:41]-canonical_ave$sd[22:41], seq(30, 49, 1),
+             canonical_ave$mean[22:41]+canonical_ave$sd[22:41], length=0.05, angle=90, code=3)
+    }
   }
 
-  legend("top", ncol=3,
+  legend("bottom", ncol=3,
          legend = c("inclusion gain", "inclusion loss", "high", "low", "canonical"),
          col = c("red", "black", "blue", "green", "purple"),
          bty = "n",lty=c(1, 1, 1, 1, 2), cex = 0.75, xjust = 0

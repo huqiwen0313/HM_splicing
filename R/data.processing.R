@@ -88,9 +88,17 @@ as_ave_chip_signal <- function(HM_file, total_reads){
   left_region_signal <- dplyr::bind_cols(left_signal)
   right_region_signal <- dplyr::bind_cols(right_signal)
 
-  left_region_mean = rowMeans(left_region_signal / total_reads) * 1e6
+  left_region_mean <- rowMeans(left_region_signal / total_reads) * 1e6
+  left_region_sd <- apply(left_region_signal, 1, function(r){
+    round(var((r/total_reads) * 1e6), 3)
+  })
+
   right_region_mean = rowMeans(right_region_signal / total_reads) * 1e6
-  return(c(left_region_mean, right_region_mean))
+  right_region_sd <-  apply(right_region_signal, 1, function(r){
+    round(var((r/total_reads) * 1e6), 3)
+  })
+
+  return(list(mean=c(left_region_mean, right_region_mean), sd=c(left_region_sd, right_region_sd)))
 }
 
 canonical_ave_chip_signal <- function(HM_file, total_reads){
@@ -124,8 +132,16 @@ canonical_ave_chip_signal <- function(HM_file, total_reads){
   right_signal <- dplyr::bind_cols(right_signal)
 
   left_region_mean = rowMeans(left_signal / total_reads) * 1e6
+  left_region_sd <- apply(left_region_signal, 1, function(r){
+    round(var((r/total_reads) * 1e6), 3)
+  })
+
   right_region_mean = rowMeans(right_signal / total_reads) * 1e6
-  return(c(left_region_mean, right_region_mean))
+  right_region_sd <-  apply(right_region_signal, 1, function(r){
+    round(var((r/total_reads) * 1e6), 3)
+  })
+
+  return(list(mean=c(left_region_mean, right_region_mean), sd=c(left_region_sd, right_region_sd)))
 }
 
 getSampleInfo <- function(sample_file_name){
