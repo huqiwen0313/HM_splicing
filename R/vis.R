@@ -11,7 +11,8 @@
 #' @return plot of distribution of hPTMs in the exon flanking regions
 #' @import ggplot2
 #' @export
-plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsampleCanonical=F, CanonicalFile=NULL){
+plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsampleCanonical=F, CanonicalFile=NULL,
+                         scaleVar=FALSE){
 
   # get sample information
   tissue <- sample_info[1]
@@ -49,8 +50,10 @@ plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsam
     set.seed(1236)
     #canonical.dir <- file.path("data", "processed", "canonical")
     canonical <- read.table(CanonicalFile, sep = "\t")
-    canonical <- canonical[sample(nrow(canonical),
-                                  size = max(nrow(gain), nrow(loss), nrow(High), nrow(Low)), replace = F), ]
+    # get the same genes from HM file
+    canonical <- canonical[canonical[, 5] %in% HM_file$GeneID, ]
+    #canonical <- canonical[sample(nrow(canonical),
+    #                              size = max(nrow(gain), nrow(loss), nrow(High), nrow(Low)), replace = F), ]
     canonical_ave <- canonical_ave_chip_signal(canonical, total_reads)
   }
 
@@ -67,11 +70,31 @@ plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsam
   lines(30:49, gain_ave_chip$mean[22:41], col="red", lwd=2)
   abline(v = c(10, 40), lty=2, col="grey")
   lines(1:20, high_ave_chip$mean[1:20], col="blue", lwd=2)
-  lines(30:49, high_ave_chip$mean[21:40], col="blue", lwd=2)
+  lines(30:49, high_ave_chip$mean[22:41], col="blue", lwd=2)
   lines(1:20, low_ave_chip$mean[1:20], col="green", lwd=2)
-  lines(30:49, low_ave_chip$mean[21:40], col="green", lwd=2)
+  lines(30:49, low_ave_chip$mean[22:41], col="green", lwd=2)
 
   if(plotVar){
+    if(scaleVar){
+      abline(h = 4)
+      arrows(seq(1, 20, 1), loss_ave_chip$mean[1:20]-loss_ave_chip$sd[1:20]/2, seq(1, 20, 1),
+             loss_ave_chip$mean[1:20]+loss_ave_chip$sd[1:20]/2, length=0.05, angle=90, code=3)
+      arrows(seq(30, 49, 1), loss_ave_chip$mean[22:41]-loss_ave_chip$sd[22:41]/2, seq(30, 49, 1),
+             loss_ave_chip$mean[22:41]+loss_ave_chip$sd[22:41]/2, length=0.05, angle=90, code=3)
+      arrows(seq(1, 20, 1), gain_ave_chip$mean[1:20]-gain_ave_chip$sd[1:20]/2, seq(1, 20, 1),
+             gain_ave_chip$mean[1:20]+gain_ave_chip$sd[1:20]/2, length=0.05, angle=90, code=3, col="red")
+      arrows(seq(30, 49, 1), gain_ave_chip$mean[22:41]- gain_ave_chip$sd[22:41]/2, seq(30, 49, 1),
+             gain_ave_chip$mean[22:41]+ gain_ave_chip$sd[22:41]/2, length=0.05, angle=90, code=3, col="red")
+      arrows(seq(1, 20, 1), high_ave_chip$mean[1:20]-high_ave_chip$sd[1:20]/2, seq(1, 20, 1),
+             high_ave_chip$mean[1:20]+high_ave_chip$sd[1:20]/2, length=0.05, angle=90, code=3, col="blue")
+      arrows(seq(30, 49, 1), high_ave_chip$mean[22:41]- high_ave_chip$sd[22:41]/2, seq(30, 49, 1),
+             high_ave_chip$mean[22:41]+ high_ave_chip$sd[22:41]/2, length=0.05, angle=90, code=3, col="blue")
+      arrows(seq(1, 20, 1), low_ave_chip$mean[1:20]-low_ave_chip$sd[1:20]/2, seq(1, 20, 1),
+             low_ave_chip$mean[1:20]+low_ave_chip$sd[1:20]/2, length=0.05, angle=90, code=3, col="green")
+      arrows(seq(30, 49, 1), low_ave_chip$mean[22:41]- low_ave_chip$sd[22:41]/2, seq(30, 49, 1),
+             low_ave_chip$mean[22:41]+low_ave_chip$sd[22:41]/2, length=0.05, angle=90, code=3, col="green")
+
+    } else{
     abline(h = 4)
     arrows(seq(1, 20, 1), loss_ave_chip$mean[1:20]-loss_ave_chip$sd[1:20], seq(1, 20, 1),
            loss_ave_chip$mean[1:20]+loss_ave_chip$sd[1:20], length=0.05, angle=90, code=3)
@@ -89,6 +112,7 @@ plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsam
            low_ave_chip$mean[1:20]+low_ave_chip$sd[1:20], length=0.05, angle=90, code=3, col="green")
     arrows(seq(30, 49, 1), low_ave_chip$mean[22:41]- low_ave_chip$sd[22:41], seq(30, 49, 1),
            low_ave_chip$mean[22:41]+low_ave_chip$sd[22:41], length=0.05, angle=90, code=3, col="green")
+    }
   }
 
 
@@ -96,13 +120,13 @@ plotCoverage <- function(HM_file, total_reads, sample_info, plotVar=TRUE, subsam
   if(subsampleCanonical){
     lines(1:20, canonical_ave$mean[1:20], col="purple", lwd=1, lty = 2)
     lines(30:49, canonical_ave$mean[21:40], col="purple", lwd=1, lty = 2)
-    if(plotVar){
-      abline(h = 4)
-      arrows(seq(1, 20, 1), canonical_ave$mean[1:20]-canonical_ave$sd[1:20], seq(1, 20, 1),
-             canonical_ave$mean[1:20]+canonical_ave$sd[1:20], length=0.05, angle=90, code=3)
-      arrows(seq(30, 49, 1), canonical_ave$mean[22:41]-canonical_ave$sd[22:41], seq(30, 49, 1),
-             canonical_ave$mean[22:41]+canonical_ave$sd[22:41], length=0.05, angle=90, code=3)
-    }
+   # if(plotVar){
+    #  abline(h = 4)
+    #  arrows(seq(1, 20, 1), canonical_ave$mean[1:20]-canonical_ave$sd[1:20], seq(1, 20, 1),
+    #         canonical_ave$mean[1:20]+canonical_ave$sd[1:20], length=0.05, angle=90, code=3)
+    #  arrows(seq(30, 49, 1), canonical_ave$mean[22:41]-canonical_ave$sd[22:41], seq(30, 49, 1),
+    #         canonical_ave$mean[22:41]+canonical_ave$sd[22:41], length=0.05, angle=90, code=3)
+    #}
   }
 
   legend("bottom", ncol=3,
